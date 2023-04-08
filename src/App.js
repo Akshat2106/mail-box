@@ -1,10 +1,12 @@
 import Navigationbar from './Components/Layout/Navigationbar';
 import Login from './Components/Pages/Login';
 import './App.css'
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import DummyScreen from './Components/Pages/Inbox';
 import { useSelector } from 'react-redux';
 import Inbox from './Components/Pages/Inbox';
 import ComposeMail from './Components/Pages/ComposeMail';
+
 
 
 function App() {
