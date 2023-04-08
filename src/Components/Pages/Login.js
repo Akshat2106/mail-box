@@ -6,12 +6,22 @@ import { useHistory } from 'react-router-dom';
 
 
 import { authActions } from '../Store';
+function removeSpecialChar(mail){
+    let newMail="";
+    for(let i=0;i<mail.length;i++){
+        if(mail[i]!=="@" && mail[i]!=="."){
+        newMail +=mail[i]
+        }
+    }
+    return newMail;
+}
 
 const Login = () => {
     const [login, setLogin] = useState(false);
     const enteredMail = useRef();
     const enteredPassword = useRef();
     const enteredConfirmPassword = useRef();
+    
     let dispatch=useDispatch();
     const history=useHistory();
     const toggleLogin = () => {
@@ -22,10 +32,10 @@ const Login = () => {
         if (!login) {
             if (enteredMail.current.value.length > 0 && enteredPassword.current.value.length > 0 && enteredConfirmPassword.current.value.length > 0) {
                 if (enteredPassword.current.value !== enteredConfirmPassword.current.value) {
-                    alert("password and confirmPassword not matching")
+                    alert("password and confirmPasswors not matching")
                 } else {
                     try {
-                        let responce = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC9KeN5MkE68bdM6gK61GjM9DumsLg5tpU", {
+                        let responce = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAraxx_46RjDk7l5-KmSwqahc0Pq4U2vLA", {
                             method: "POST",
                             body: JSON.stringify({
                                 "email": enteredMail.current.value,
@@ -39,6 +49,11 @@ const Login = () => {
                         if (responce.ok) {
                             console.log("User has successfully signed up")
                             alert(`User has successfully signed up`)
+                            const data=await responce.json();
+                            dispatch(authActions.setToken(data.idToken));
+                            dispatch(authActions.setUser(enteredMail.current.value));
+                            localStorage.setItem("token",data.idToken)
+                            localStorage.setItem("user",enteredMail.current.value)
                         } else {
                             alert("Authentication failed")
                             throw new Error("Sign up failed");
@@ -68,10 +83,12 @@ const Login = () => {
                         const data=await responce.json();
                         console.log(data.idToken);
                         dispatch(authActions.setToken(data.idToken));
+                        dispatch(authActions.setUser(enteredMail.current.value));
                         localStorage.setItem("token",data.idToken)
                         console.log("User has successfully Log in")
                         alert(`User has successfully logged in`)
-                        history.push('/profile')
+                        localStorage.setItem("user",enteredMail.current.value)
+                        history.push('/inbox')
                     } else {
                         alert("Authentication failed")
                         throw new Error("Log in failed");
