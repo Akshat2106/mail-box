@@ -36,12 +36,9 @@ function Inbox() {
   }
 
   const handleReadedMessage = async (msg) => {
-    // console.log(msg)
-    // console.log("clicked");
-    // console.log(user, msg.name);
     try {
       let responce = await fetch(
-        `mail/${user}/${msg.name}.json`,
+        `https://mail-box-ebf7e-default-rtdb.firebaseio.com/mail/${user}/${msg.name}.json`,
         {
           method: 'PATCH',
           headers: {
@@ -51,7 +48,6 @@ function Inbox() {
         }
       )
       if (responce.ok) {
-        // alert("Readed")
       } else {
         throw new Error("Failed to Read mail")
       }
@@ -61,7 +57,6 @@ function Inbox() {
   }
 
   const handleDelete = async (msg) => {
-    // console.log("deleted");
     try {
       let responce = await fetch(
         `https://mail-box-ebf7e-default-rtdb.firebaseio.com/mail/${user}/${msg.name}.json`,
@@ -96,7 +91,6 @@ function Inbox() {
         )
         if (responce.ok) {
           let data = await responce.json();
-          // console.log("data", data);
           let newMessageArray = [];
           if (data == null) {
             newMessageArray = [];
@@ -104,11 +98,9 @@ function Inbox() {
             dispatch(messageActions.setUnreadMessages(countUnreadMessages(newMessageArray)));
           } else {
             const keys = Object.keys(data);
-            // console.log("keys", keys);
             keys.forEach((key) => {
               newMessageArray.unshift({ ...data[key], name: key })
             });
-
             console.log(newMessageArray);
             dispatch(messageActions.setMessages(newMessageArray));
             dispatch(messageActions.setUnreadMessages(countUnreadMessages(newMessageArray)));
@@ -122,7 +114,7 @@ function Inbox() {
     }
     let fetching = setTimeout(() => {
       fetchMessages();
-    }, 3000);
+    }, 2000);
     return () => {
       clearTimeout(fetching);
     }
@@ -177,4 +169,4 @@ function Inbox() {
   )
 }
 
-export default Inbox;
+export default Inbox ;
