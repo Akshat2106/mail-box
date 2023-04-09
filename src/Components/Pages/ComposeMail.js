@@ -1,9 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef} from 'react';
 import './Inbox'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { EditorState} from 'draft-js';
 
 function removeSpecialChar(mail) {
     let newMail = "";
@@ -16,20 +15,12 @@ function removeSpecialChar(mail) {
 }
 
 function ComposeMail() {
+    const user = removeSpecialChar(useSelector(state => state.authentication.user));
     const receiver = useRef();
     const subject = useRef();
     const mailBody = useRef();
     const sender = useSelector(state => state.authentication.user);
 
-    const [editorState, setEditorState] = useState(() =>
-        EditorState.createEmpty()
-    );
-
-    // const updateTextDescription = async (state) => {
-    //     await setEditorState(state);
-    //     const data = convertToRaw(editorState.getCurrentContent());
-
-    // };
     const handleSendMail = async (e) => {
         e.preventDefault();
         console.log("sended");
@@ -46,7 +37,7 @@ function ComposeMail() {
 
             try {
                 let responce = await fetch(
-                    `https://mail-box-ebf7e-default-rtdb.firebaseio.com/mail/${removeSpecialChar(receiver.current.value)}.json`,
+                    `mail/${removeSpecialChar(receiver.current.value)}.json`,
                     {
                         method: 'POST',
                         body: JSON.stringify(newMail),
@@ -59,6 +50,28 @@ function ComposeMail() {
                     let data = await responce.json();
                     console.log(data);
                     alert("mail sent successfully");
+                    try {
+                        let responce = await fetch(
+                            `https://mail-box-ebf7e-default-rtdb.firebaseio.com/sentmail/${user}.json`,
+                            {
+                                method: 'POST',
+                                body: JSON.stringify({...newMail,receiver:receiver.current.value}),
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            }
+                        )
+                        if (responce.ok) {
+                            let data = await responce.json();
+                            console.log(data);
+                           console.log("sent to sent mail")
+                        } else {
+                            throw new Error("Failed to send in sent mail")
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
+
                 } else {
                     throw new Error("Failed to send mail")
                 }

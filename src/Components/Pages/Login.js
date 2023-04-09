@@ -1,29 +1,19 @@
 import React, { useRef, useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useDispatch } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
-
 import { authActions } from '../Store';
-function removeSpecialChar(mail){
-    let newMail="";
-    for(let i=0;i<mail.length;i++){
-        if(mail[i]!=="@" && mail[i]!=="."){
-        newMail +=mail[i]
-        }
-    }
-    return newMail;
-}
+
 
 const Login = () => {
     const [login, setLogin] = useState(false);
     const enteredMail = useRef();
     const enteredPassword = useRef();
     const enteredConfirmPassword = useRef();
-    
-    let dispatch=useDispatch();
-    const history=useHistory();
+
+    let dispatch = useDispatch();
+    const history = useHistory();
     const toggleLogin = () => {
         setLogin(!login);
     }
@@ -49,11 +39,11 @@ const Login = () => {
                         if (responce.ok) {
                             console.log("User has successfully signed up")
                             alert(`User has successfully signed up`)
-                            const data=await responce.json();
+                            const data = await responce.json();
                             dispatch(authActions.setToken(data.idToken));
                             dispatch(authActions.setUser(enteredMail.current.value));
-                            localStorage.setItem("token",data.idToken)
-                            localStorage.setItem("user",enteredMail.current.value)
+                            localStorage.setItem("token", data.idToken)
+                            localStorage.setItem("user", enteredMail.current.value)
                         } else {
                             alert("Authentication failed")
                             throw new Error("Sign up failed");
@@ -80,14 +70,14 @@ const Login = () => {
                         }
                     })
                     if (responce.ok) {
-                        const data=await responce.json();
+                        const data = await responce.json();
                         console.log(data.idToken);
                         dispatch(authActions.setToken(data.idToken));
                         dispatch(authActions.setUser(enteredMail.current.value));
-                        localStorage.setItem("token",data.idToken)
+                        localStorage.setItem("token", data.idToken)
                         console.log("User has successfully Log in")
                         alert(`User has successfully logged in`)
-                        localStorage.setItem("user",enteredMail.current.value)
+                        localStorage.setItem("user", enteredMail.current.value)
                         history.push('/inbox')
                     } else {
                         alert("Authentication failed")
