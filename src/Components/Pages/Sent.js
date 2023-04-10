@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Accordion } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux';
 import { messageActions } from '../Store';
+import useHttp from '../Hooks/use-http';
 
 function removeSpecialChar(mail) {
     let newMail = "";
@@ -22,7 +23,7 @@ const Sent = () => {
         async function fetchSentMessages() {
             try {
                 let responce = await fetch(
-                    `https://mail-box-ebf7e-default-rtdb.firebaseio.com/sentmail/${(user)}.json`,
+                    `https://mail-data-d37a7-default-rtdb.firebaseio.com/sentmail/${(user)}.json`,
                     {
                         method: 'GET',
                         headers: {

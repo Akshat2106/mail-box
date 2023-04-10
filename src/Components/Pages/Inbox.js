@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { messageActions } from '../Store';
 import { useHistory } from 'react-router-dom';
 import { Dot } from 'react-bootstrap-icons';
+import useHttp from '../Hooks/use-http';
 function removeSpecialChar(mail) {
   let newMail = "";
   for (let i = 0; i < mail.length; i++) {
@@ -30,6 +31,8 @@ function Inbox() {
   const messages = useSelector(state => state.messages.messages);
   const dispatch = useDispatch();
   const history = useHistory();
+
+
   const handleCompose = (e) => {
     e.preventDefault();
     history.push("/composemail");
@@ -118,7 +121,8 @@ function Inbox() {
     return () => {
       clearTimeout(fetching);
     }
-  }, [messages,user,dispatch])
+  }, [messages, user, dispatch])
+
 
   return (
     <div className='container'>
@@ -169,4 +173,4 @@ function Inbox() {
   )
 }
 
-export default Inbox ;
+export default Inbox;
