@@ -1,40 +1,35 @@
-import Navigationbar from './Components/Layout/Navigationbar';
-import Login from './Components/Pages/Login';
-import './App.css'
-import {  Redirect, Route, Switch } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import Inbox from './Components/Pages/Inbox';
-import ComposeMail from './Components/Pages/ComposeMail';
-import Sent from './Components/Pages/Sent';
+import { Switch, Route, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Auth from "./components/Auth";
+import Home from "./components/Home";
+import Header from "./components/Header";
 
+const App = () => {
+  const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
 
-
-function App() {
-  const token = useSelector(state => state.authentication.token)
   return (
     <>
-      <Navigationbar />
-      <div>
-        <Switch>
-          <Route exact path='/'>
-            <Login />
+      <Header />
+      <Switch>
+        <Route exact path="/">
+          {!isLoggedIn && <Redirect to="/auth" />}
+          {isLoggedIn && <Redirect to="/home/inbox" />}
+        </Route>
+        {!isLoggedIn && (
+          <Route path="/auth">
+            <Auth />
           </Route>
-          <Route exact path='/composemail'>
-            {token && <ComposeMail />}
-            {!token && <Redirect to='/' />}
-          </Route>
-          <Route exact path='/sent'>
-            {token && <Sent />}
-            {!token && <Redirect to='/' />}
-          </Route>
-          <Route exact path='/inbox'>
-            {token && <Inbox />}
-            {!token && <Redirect to='/' />}
-          </Route>
-        </Switch>
-      </div>
+        )}
+        <Route path="/home">
+          {!isLoggedIn && <Redirect to="/auth" />}
+          <Home />
+        </Route>
+        <Route path="*">
+          <Redirect to="/" />
+        </Route>
+      </Switch>
     </>
   );
-}
+};
 
 export default App;
